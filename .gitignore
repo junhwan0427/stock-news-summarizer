@@ -1,0 +1,30 @@
+# 시크릿: 절대 커밋 금지
+.env
+.env.*
+!.env.example
+
+# 운영체제가 만드는 파일
+.DS_Store
+Thumbs.db
+
+# IDE 설정
+.idea/
+*.iml
+.vscode/
+
+# Java / Gradle 빌드 결과물
+build/
+.gradle/
+out/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node
+node_modules/
+dist/
+
+# 로그
+*.log

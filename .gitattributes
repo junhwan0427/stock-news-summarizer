@@ -1,0 +1,16 @@
+# 기본 규칙: Git이 텍스트 파일인지 알아서 판단하고, 저장소 안에는 LF로 저장한다
+* text=auto
+
+# 리눅스(Docker 컨테이너)에서 실행되는 파일은 내 PC에서도 항상 LF
+*.sh     text eol=lf
+gradlew  text eol=lf
+
+# 윈도우에서만 실행되는 파일은 항상 CRLF
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
+
+# 텍스트가 아닌 파일은 절대 건드리지 않는다
+*.jar    binary
+*.png    binary
+*.jpg    binary
+*.ico    binary
