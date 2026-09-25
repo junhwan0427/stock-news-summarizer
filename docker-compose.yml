@@ -1,0 +1,25 @@
+# 로컬 개발용 구성.
+# 지금은 PostgreSQL만 있고, backend·analyzer는 만들면서 여기에 추가한다.
+# 값(${...})은 같은 폴더의 .env에서 읽는다.
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: stock-news-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"   # 내 PC의 5432 → 컨테이너의 5432 (DBeaver 접속용, local 전용)
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # DB 파일은 볼륨에 저장 → 컨테이너를 지워도 데이터 유지
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  pgdata:
