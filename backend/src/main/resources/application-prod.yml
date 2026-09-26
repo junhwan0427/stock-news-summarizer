@@ -1,0 +1,7 @@
+# prod 프로파일: 클라우드 VM에서 운영할 때.
+# 환경변수는 Docker Compose가 서버의 .env를 읽어 컨테이너에 넣어준다.
+# DB_HOST는 Compose 안의 서비스 이름(postgres)으로 넣는다.
+
+logging:
+  level:
+    root: INFO   # 운영은 INFO 이상만. (설계서 B-5)

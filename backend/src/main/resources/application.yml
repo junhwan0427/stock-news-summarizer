@@ -1,0 +1,21 @@
+# 공통 설정. local/prod 모두에 적용된다.
+# 값은 환경변수(${...})로만 받는다. 시크릿을 여기에 직접 쓰지 않는다. (설계서 B-2)
+
+spring:
+  application:
+    name: stock-news
+  profiles:
+    default: local   # 프로파일을 지정하지 않고 실행하면 local로 뜬다. prod는 SPRING_PROFILES_ACTIVE=prod로 지정.
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate   # 테이블은 Flyway가 만든다. JPA는 Entity와 테이블이 맞는지 검사만. (설계서 B-8)
+    open-in-view: false    # DB 연결을 요청 처리가 끝날 때까지 붙잡지 않게 한다.
+
+  flyway:
+    enabled: true          # 앱 시작 시 src/main/resources/db/migration 의 SQL을 순서대로 적용.
