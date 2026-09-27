@@ -19,3 +19,16 @@ spring:
 
   flyway:
     enabled: true          # 앱 시작 시 src/main/resources/db/migration 의 SQL을 순서대로 적용.
+
+# Massive(구 Polygon) API: 종목 조회, 뉴스, 일봉, 휴장일
+massive:
+  base-url: https://api.massive.com
+  api-key: ${POLYGON_API_KEY:}   # 키는 요청 URL이 아니라 Authorization 헤더로 보낸다. (로그에 안 남게)
+  connect-timeout: 5s
+  read-timeout: 10s
+
+stocknews:
+  fixed-user:
+    email: admin@stocknews.local   # 인증 전까지 모든 요청을 이 사용자로 처리. V4 마이그레이션과 같은 값.
+  watchlist:
+    max-per-user: 5                # 일반 사용자(USER)당 관심 종목 최대 수. 관리자(ADMIN)는 무제한.
