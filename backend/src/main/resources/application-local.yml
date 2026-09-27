@@ -1,0 +1,11 @@
+# local 프로파일: 내 PC에서 개발할 때.
+
+spring:
+  config:
+    # 프로젝트 루트의 .env를 설정값으로 읽어온다. (IntelliJ나 gradlew로 실행할 때 환경변수를 따로 넣지 않아도 됨)
+    # optional: 파일이 없어도 에러 내지 않음. [.properties]: .env를 key=value 형식으로 해석하라는 뜻.
+    import: optional:file:../.env[.properties]
+
+logging:
+  level:
+    io.github.junhwan0427.stocknews: DEBUG   # 우리 코드는 DEBUG까지. (설계서 B-5)
