@@ -1,0 +1,51 @@
+# 백엔드 CI: PR을 올리거나 main에 머지될 때 backend를 빌드하고 테스트한다. (설계서 B-7)
+# 백엔드가 안 바뀐 PR에서는 빌드를 건너뛴다. 건너뛴 것도 "통과"로 쳐서 머지가 막히지 않는다.
+
+name: backend-ci
+
+on:
+  pull_request:            # PR을 만들거나 새 커밋을 올릴 때
+  push:
+    branches: [main]       # main에 머지됐을 때 (머지된 결과가 정말 괜찮은지 한 번 더)
+
+permissions:
+  contents: read           # 코드 읽기만. 필요한 최소 권한만 준다.
+  pull-requests: read      # PR에서 바뀐 파일 목록을 보려고
+
+concurrency:
+  # 같은 PR에 커밋을 연달아 올리면 이전 실행은 취소하고 최신 것만 돌린다.
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  changes:
+    # 1단계: backend 폴더가 바뀌었는지 확인
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: filter
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - '.github/workflows/backend-ci.yml'
+
+  backend-build:
+    # 2단계: 바뀌었으면 빌드 + 테스트. 안 바뀌었으면 건너뜀(Skipped).
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v7            # 레포 코드 받기
+      - uses: actions/setup-java@v6          # Java 21 설치
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v6 # Gradle 준비 + 라이브러리 캐시 (두 번째부터 빨라짐)
+      - run: ./gradlew build                 # 컴파일 + 테스트 (Testcontainers는 러너의 Docker 사용)
